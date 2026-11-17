@@ -1,0 +1,9 @@
+# 本地工具与产物，不要提交（.tools 里是 137MB 的安装包）
+.tools/
+dist/
+build/
+*.ipa
+*.xcarchive
+.PSStore
+.DS_Store
+Thumbs.db
