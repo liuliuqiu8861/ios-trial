@@ -1,0 +1,45 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure xcodegen
+        run: command -v xcodegen >/dev/null 2>&1 || brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned archive
+        run: |
+          xcodebuild archive \
+            -project HelloApp.xcodeproj \
+            -scheme HelloApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/HelloApp.xcarchive \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            EXPANDED_CODE_SIGN_IDENTITY=""
+
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -R build/HelloApp.xcarchive/Products/Applications/HelloApp.app Payload/
+          zip -r HelloApp.ipa Payload
+          ls -la HelloApp.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HelloApp-ipa
+          path: HelloApp.ipa
+          retention-days: 30
