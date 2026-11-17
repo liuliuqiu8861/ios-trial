@@ -28,7 +28,7 @@ iPhone 上出现 App
 3. 在这个文件夹里执行（把 `<你的用户名>` 换成实际用户名）：
 
 ```bash
-cd /c/Users/liuliuqiu/ios-trial
+cd /c/ios-trial
 git init
 git add .
 git commit -m "init: hello app"
